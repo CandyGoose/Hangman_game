@@ -8,9 +8,17 @@ class CategoryProviderTest {
 
     @Test
     void testGetRandomWord() {
-        String word = CategoryProvider.getRandomWord("Легкий");
+        String word = CategoryProvider.getRandomWord("Животные", "Легкий");
         assertNotNull(word);
-        assertTrue(List.of("кот", "дом", "мир").contains(word));
+        assertTrue(List.of("кот", "пёс", "заяц").contains(word));
+    }
+
+    @Test
+    void testGetCategories() {
+        List<String> categories = CategoryProvider.getCategories();
+        assertEquals(2, categories.size());
+        assertTrue(categories.contains("Животные"));
+        assertTrue(categories.contains("Техника"));
     }
 
     @Test

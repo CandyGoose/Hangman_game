@@ -1,34 +1,53 @@
 package backend.academy;
 
-import lombok.experimental.UtilityClass;
 import java.util.List;
 import java.util.Scanner;
 
-@UtilityClass
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<String> difficultyLevels = CategoryProvider.getDifficultyLevels();
 
+        // Выбор категории
+        List<String> categories = CategoryProvider.getCategories();
+        System.out.println("Выберите категорию: ");
+        for (int i = 0; i < categories.size(); i++) {
+            System.out.println((i + 1) + ". " + categories.get(i));
+        }
+
+        int categoryChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (categoryChoice < 1 || categoryChoice > categories.size()) {
+            System.out.println("Неправильный выбор, используется категория 'Животные'.");
+            categoryChoice = 1;
+        }
+
+        String selectedCategory = categories.get(categoryChoice - 1);
+
+        // Выбор уровня сложности
+        List<String> difficultyLevels = CategoryProvider.getDifficultyLevels();
         System.out.println("Выберите уровень сложности: ");
         for (int i = 0; i < difficultyLevels.size(); i++) {
             System.out.println((i + 1) + ". " + difficultyLevels.get(i));
         }
 
-        int choice = scanner.nextInt();
+        int difficultyChoice = scanner.nextInt();
         scanner.nextLine();
 
-        if (choice < 1 || choice > difficultyLevels.size()) {
+        if (difficultyChoice < 1 || difficultyChoice > difficultyLevels.size()) {
             System.out.println("Неправильный выбор, используется уровень сложности 'Средний'.");
-            choice = 2;
+            difficultyChoice = 2;
         }
 
-        String selectedDifficulty = difficultyLevels.get(choice - 1);
-        String word = CategoryProvider.getRandomWord(selectedDifficulty);
+        String selectedDifficulty = difficultyLevels.get(difficultyChoice - 1);
+
+        String word = CategoryProvider.getRandomWord(selectedCategory, selectedDifficulty);
 
         Game game = new Game(word);
+        System.out.println("Категория: " + selectedCategory);
         System.out.println("Уровень сложности: " + selectedDifficulty);
 
+        // Игровой цикл
         while (!game.isGameOver()) {
             System.out.println(game.getMaskedWord());
             System.out.println("Введите букву: ");
