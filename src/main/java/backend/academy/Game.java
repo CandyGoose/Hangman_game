@@ -33,6 +33,7 @@ public class Game {
             if (!word.contains(String.valueOf(guess))) {
                 attemptsLeft--;
                 System.out.println("Неправильная буква! Осталось попыток: " + attemptsLeft);
+                HangmanVisual.displayHangman(attemptsLeft);
             }
         }
     }
