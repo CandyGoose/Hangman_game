@@ -24,8 +24,8 @@ public class Main {
             String selectedCategory = chooseCategory(out, scanner, random);
             String selectedDifficulty = chooseDifficulty(out, scanner, random);
 
-            String word = CategoryProvider.getRandomWord(selectedCategory, selectedDifficulty);
-            Game game = new Game(word);
+            WordWithHint word = WordProvider.getRandomWord(selectedCategory, selectedDifficulty);
+            Game game = new Game(word.getWord(), word.getHint());
 
             out.println("Категория: " + selectedCategory);
             out.println("Сложность: " + selectedDifficulty);
@@ -40,7 +40,7 @@ public class Main {
     }
 
     private static String chooseCategory(PrintStream out, Scanner scanner, Random random) {
-        List<String> categories = CategoryProvider.getCategories();
+        List<String> categories = WordProvider.getCategories();
         out.println("Выберите категорию (или нажмите Enter для случайного выбора): ");
         for (int i = 0; i < categories.size(); i++) {
             out.println((i + 1) + ". " + categories.get(i));
@@ -70,7 +70,7 @@ public class Main {
     }
 
     private static String chooseDifficulty(PrintStream out, Scanner scanner, Random random) {
-        List<String> difficultyLevels = CategoryProvider.getDifficultyLevels();
+        List<String> difficultyLevels = WordProvider.getDifficultyLevels();
         out.println("Выберите уровень сложности (или нажмите Enter для случайного выбора): ");
         for (int i = 0; i < difficultyLevels.size(); i++) {
             out.println((i + 1) + ". " + difficultyLevels.get(i));
@@ -103,16 +103,18 @@ public class Main {
     private static void playGame(PrintStream out, Scanner scanner, Game game) {
         while (!game.isGameOver()) {
             out.println(game.getMaskedWord());
-            out.println("Введите букву: ");
+            out.println("Введите букву или напишите 'подсказка': ");
             String letterInput = scanner.nextLine().toLowerCase();
 
-            if (letterInput.length() != 1 || !Character.isLetter(letterInput.charAt(0))) {
+            if (letterInput.equals("подсказка")) {
+                out.println("Подсказка: " + game.getHint());
+            } else if (letterInput.length() != 1 || !Character.isLetter(letterInput.charAt(0))) {
                 out.println("Ошибка ввода. Введите одну букву.");
                 continue;
+            } else {
+                char guess = letterInput.charAt(0);
+                game.makeGuess(guess);
             }
-
-            char guess = letterInput.charAt(0);
-            game.makeGuess(guess);
 
             if (game.isWordGuessed()) {
                 out.println("Поздравляем! Вы угадали слово: " + game.getWord());

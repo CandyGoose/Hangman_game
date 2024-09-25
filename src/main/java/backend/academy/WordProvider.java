@@ -9,22 +9,22 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CategoryProvider {
+public class WordProvider {
 
-    private static final Logger LOGGER = LogManager.getLogger(CategoryProvider.class);
+    private static final Logger LOGGER = LogManager.getLogger(WordProvider.class);
     private static final String ERROR_READING_DICTIONARY = "Ошибка чтения словаря: ";
     private static final String ERROR_GETTING_CATEGORIES = "Ошибка получения категорий: ";
     private static final String ERROR_GETTING_RANDOM_WORD = "Ошибка получения случайного слова: ";
-    private static final Map<String, Map<String, List<String>>> WORD_DICTIONARY;
+    private static final Map<String, Map<String, List<Map<String, String>>>> WORD_DICTIONARY;
 
-    private CategoryProvider() {
+    private WordProvider() {
         throw new UnsupportedOperationException("Utility class");
     }
 
     static {
         ObjectMapper mapper = new ObjectMapper();
         try (InputStream inputStream =
-                 CategoryProvider.class.getClassLoader().getResourceAsStream("words.json")) {
+                 WordProvider.class.getClassLoader().getResourceAsStream("words.json")) {
             if (inputStream == null) {
                 throw new RuntimeException("Файл словаря words.json не найден в ресурсах.");
             }
@@ -49,14 +49,14 @@ public class CategoryProvider {
         return List.of("Легкий", "Средний", "Тяжелый");
     }
 
-    public static String getRandomWord(String category, String difficulty) {
+    public static WordWithHint getRandomWord(String category, String difficulty) {
         try {
-            Map<String, List<String>> categoryWords = WORD_DICTIONARY.get(category);
+            Map<String, List<Map<String, String>>> categoryWords = WORD_DICTIONARY.get(category);
             if (categoryWords == null) {
                 throw new RuntimeException("Категория '" + category + "' не найдена в словаре.");
             }
 
-            List<String> words = categoryWords.get(difficulty);
+            List<Map<String, String>> words = categoryWords.get(difficulty);
             if (words == null || words.isEmpty()) {
                 throw new RuntimeException(
                     "Нет доступных слов для сложности '" + difficulty + "' в категории '" + category + "'."
@@ -64,9 +64,11 @@ public class CategoryProvider {
             }
 
             Random random = new Random();
-            String word = words.get(random.nextInt(words.size()));
-            LOGGER.info("Выбрано слово: {}", word);
-            return word;
+            Map<String, String> wordEntry = words.get(random.nextInt(words.size()));
+            String word = wordEntry.get("слово");
+            String hint = wordEntry.get("подсказка");
+            LOGGER.info("Выбрано слово: {}, Подсказка: {}", word, hint);
+            return new WordWithHint(word, hint);
         } catch (Exception e) {
             LOGGER.error(ERROR_GETTING_RANDOM_WORD, e);
             throw new RuntimeException(ERROR_GETTING_RANDOM_WORD + e.getMessage(), e);

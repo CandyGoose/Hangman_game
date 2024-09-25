@@ -6,18 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CategoryProviderTest {
+class WordProviderTest {
 
     @Test
     void testGetRandomWord() {
-        String word = CategoryProvider.getRandomWord("Животные", "Легкий");
-        assertNotNull(word);
-        assertTrue(List.of("кот", "пёс", "заяц", "муха", "птица").contains(word));
+        WordWithHint wordWithHint = WordProvider.getRandomWord("Животные", "Легкий");
+        assertNotNull(wordWithHint);
+        assertTrue(List.of("кот", "пёс", "заяц", "муха", "птица").contains(wordWithHint.getWord()));
     }
 
     @Test
     void testGetCategories() {
-        List<String> categories = CategoryProvider.getCategories();
+        List<String> categories = WordProvider.getCategories();
         assertEquals(3, categories.size());
         assertTrue(categories.contains("Животные"));
         assertTrue(categories.contains("Техника"));
@@ -26,7 +26,7 @@ class CategoryProviderTest {
 
     @Test
     void testGetDifficultyLevels() {
-        List<String> levels = CategoryProvider.getDifficultyLevels();
+        List<String> levels = WordProvider.getDifficultyLevels();
         assertEquals(3, levels.size());
         assertTrue(levels.contains("Легкий"));
         assertTrue(levels.contains("Средний"));

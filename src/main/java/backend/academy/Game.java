@@ -6,16 +6,18 @@ import java.util.Set;
 
 public class Game {
     private String word;
+    private String hint;
     private Set<Character> guessedLetters;
     private int attemptsLeft;
     private final int maxAttempts = 6;
     private PrintStream out;
 
-    public Game(String word) {
+    public Game(String word, String hint) {
         if (word == null || word.isEmpty()) {
             throw new IllegalArgumentException("Загаданное слово не может быть пустым.");
         }
         this.word = word.toLowerCase();
+        this.hint = hint;
         this.guessedLetters = new HashSet<>();
         this.attemptsLeft = this.maxAttempts;
         this.out = System.out;
@@ -43,8 +45,6 @@ public class Game {
                 attemptsLeft--;
                 out.println("Неправильная буква! Осталось попыток: " + attemptsLeft);
                 HangmanVisual.displayHangman(attemptsLeft, out);
-            } else {
-                out.println("Правильная буква: " + guess);
             }
         } else {
             out.println("Эта буква уже была введена.");
@@ -66,5 +66,9 @@ public class Game {
 
     public String getWord() {
         return word;
+    }
+
+    public String getHint() {
+        return hint;
     }
 }
