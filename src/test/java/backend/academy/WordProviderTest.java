@@ -16,6 +16,14 @@ class WordProviderTest {
     }
 
     @Test
+    void testGetRandomWordWithHint() {
+        WordWithHint wordWithHint = WordProvider.getRandomWord("Животные", "Легкий");
+        assertNotNull(wordWithHint);
+        assertTrue(List.of("кот", "пёс", "заяц", "муха", "птица").contains(wordWithHint.getWord()));
+        assertNotNull(wordWithHint.getHint());
+    }
+
+    @Test
     void testGetCategories() {
         List<String> categories = WordProvider.getCategories();
         assertEquals(3, categories.size());
@@ -31,5 +39,15 @@ class WordProviderTest {
         assertTrue(levels.contains("Легкий"));
         assertTrue(levels.contains("Средний"));
         assertTrue(levels.contains("Тяжелый"));
+    }
+
+    @Test
+    void testGetCorrectHint() {
+        WordWithHint wordWithHint = WordProvider.getRandomWord("Животные", "Легкий");
+        if (wordWithHint.getWord().equals("кот")) {
+            assertEquals("Домашнее животное", wordWithHint.getHint());
+        } else if (wordWithHint.getWord().equals("пёс")) {
+            assertEquals("Лучший друг человека", wordWithHint.getHint());
+        }
     }
 }

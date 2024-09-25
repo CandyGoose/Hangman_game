@@ -2,6 +2,7 @@ package backend.academy;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameTest {
@@ -39,5 +40,28 @@ class GameTest {
         game.makeGuess('п');
         game.makeGuess('д');
         assertTrue(game.isGameOver());
+    }
+    
+    @Test
+    void testGetHintInGame() {
+        Game game = new Game("кот", "Домашнее животное");
+        assertEquals("Домашнее животное", game.getHint());
+    }
+
+    @Test
+    void testInvalidWordThrowsException() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Game("", "Подсказка");
+        });
+        assertEquals("Загаданное слово не может быть пустым.", exception.getMessage());
+    }
+
+    @Test
+    void testInvalidGuessThrowsException() {
+        Game game = new Game("кот", "Домашнее животное");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            game.makeGuess('1');
+        });
+        assertEquals("Буква должна быть символом.", exception.getMessage());
     }
 }
