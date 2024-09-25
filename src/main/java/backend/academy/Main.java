@@ -8,7 +8,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         // Выбор категории
-        List<String> categories = CategoryProvider.getCategories();
+        List<String> categories = WordProvider.getCategories();
         System.out.println("Выберите категорию: ");
         for (int i = 0; i < categories.size(); i++) {
             System.out.println((i + 1) + ". " + categories.get(i));
@@ -25,7 +25,7 @@ public class Main {
         String selectedCategory = categories.get(categoryChoice - 1);
 
         // Выбор уровня сложности
-        List<String> difficultyLevels = CategoryProvider.getDifficultyLevels();
+        List<String> difficultyLevels = WordProvider.getDifficultyLevels();
         System.out.println("Выберите уровень сложности: ");
         for (int i = 0; i < difficultyLevels.size(); i++) {
             System.out.println((i + 1) + ". " + difficultyLevels.get(i));
@@ -34,28 +34,22 @@ public class Main {
         int difficultyChoice = scanner.nextInt();
         scanner.nextLine();
 
-        if (difficultyChoice < 1 || difficultyChoice > difficultyLevels.size()) {
-            System.out.println("Неправильный выбор, используется уровень сложности 'Средний'.");
-            difficultyChoice = 2;
-        }
-
         String selectedDifficulty = difficultyLevels.get(difficultyChoice - 1);
 
-        String word = CategoryProvider.getRandomWord(selectedCategory, selectedDifficulty);
+        String word = WordProvider.getRandomWord(selectedCategory, selectedDifficulty);
 
         Game game = new Game(word);
         System.out.println("Категория: " + selectedCategory);
         System.out.println("Уровень сложности: " + selectedDifficulty);
 
-        game.displayGameState();
-
         // Игровой цикл
         while (!game.isGameOver()) {
+            System.out.println(game.getMaskedWord());
             System.out.println("Введите букву: ");
             String input = scanner.nextLine().toLowerCase();
 
             if (input.length() != 1 || !Character.isLetter(input.charAt(0))) {
-                System.out.println("Нужно ввести одну букву.");
+                System.out.println("Ошибка ввода. Введите одну букву.");
                 continue;
             }
 
@@ -66,7 +60,7 @@ public class Main {
                 System.out.println("Поздравляем, вы угадали слово: " + game.getWord());
                 break;
             } else if (game.isGameOver()) {
-                System.out.println("Вы проиграли! Загаданное слово было: " + game.getWord());
+                System.out.println("Вы проиграли. Загаданное слово было: " + game.getWord());
             }
         }
 
