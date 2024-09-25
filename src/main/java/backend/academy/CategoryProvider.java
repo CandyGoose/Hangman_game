@@ -1,6 +1,9 @@
 package backend.academy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class CategoryProvider {
+    private static final Logger logger = LogManager.getLogger(CategoryProvider.class);
     private static final Map<String, Map<String, List<String>>> WORD_DICTIONARY;
 
     static {
@@ -17,7 +21,9 @@ public class CategoryProvider {
                 throw new RuntimeException("Файл словаря words.json не найден в ресурсах.");
             }
             WORD_DICTIONARY = mapper.readValue(inputStream, Map.class);
+            logger.info("Словарь загружен успешно");
         } catch (IOException e) {
+            logger.error("Ошибка чтения словаря: ", e);
             throw new RuntimeException("Ошибка чтения словаря: " + e.getMessage(), e);
         }
     }
@@ -26,6 +32,7 @@ public class CategoryProvider {
         try {
             return List.copyOf(WORD_DICTIONARY.keySet());
         } catch (Exception e) {
+            logger.error("Ошибка получения категорий: ", e);
             throw new RuntimeException("Ошибка получения категорий: " + e.getMessage(), e);
         }
     }
@@ -47,8 +54,11 @@ public class CategoryProvider {
             }
 
             Random random = new Random();
-            return words.get(random.nextInt(words.size()));
+            String word = words.get(random.nextInt(words.size()));
+            logger.info("Выбрано слово: {}", word);
+            return word;
         } catch (Exception e) {
+            logger.error("Ошибка получения случайного слова: ", e);
             throw new RuntimeException("Ошибка получения случайного слова: " + e.getMessage(), e);
         }
     }

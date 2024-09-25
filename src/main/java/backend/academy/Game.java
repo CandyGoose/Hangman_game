@@ -1,9 +1,13 @@
 package backend.academy;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class Game {
+    private static final Logger logger = LogManager.getLogger(Game.class);
     private String word;
     private Set<Character> guessedLetters;
     private int attemptsLeft;
@@ -16,6 +20,7 @@ public class Game {
         this.word = word.toLowerCase();
         this.guessedLetters = new HashSet<>();
         this.attemptsLeft = this.maxAttempts;
+        logger.info("Игра началась с загаданным словом: {}", word);
     }
 
     public String getMaskedWord() {
@@ -30,6 +35,7 @@ public class Game {
             }
             return maskedWord.toString();
         } catch (Exception e) {
+            logger.error("Ошибка при генерации замаскированного слова: ", e);
             throw new RuntimeException("Ошибка при генерации замаскированного слова: " + e.getMessage(), e);
         }
     }
@@ -59,6 +65,7 @@ public class Game {
             }
             return true;
         } catch (Exception e) {
+            logger.error("Ошибка при проверке состояния слова: ", e);
             throw new RuntimeException("Ошибка при проверке состояния слова: " + e.getMessage(), e);
         }
     }
