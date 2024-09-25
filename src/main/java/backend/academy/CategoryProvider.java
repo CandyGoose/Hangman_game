@@ -23,7 +23,8 @@ public class CategoryProvider {
 
     static {
         ObjectMapper mapper = new ObjectMapper();
-        try (InputStream inputStream = CategoryProvider.class.getClassLoader().getResourceAsStream("words.json")) {
+        try (InputStream inputStream =
+                 CategoryProvider.class.getClassLoader().getResourceAsStream("words.json")) {
             if (inputStream == null) {
                 throw new RuntimeException("Файл словаря words.json не найден в ресурсах.");
             }
