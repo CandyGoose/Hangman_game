@@ -58,7 +58,9 @@ public class CategoryProvider {
 
             List<String> words = categoryWords.get(difficulty);
             if (words == null || words.isEmpty()) {
-                throw new RuntimeException("Нет доступных слов для сложности '" + difficulty + "' в категории '" + category + "'.");
+                throw new RuntimeException(
+                    "Нет доступных слов для сложности '" + difficulty + "' в категории '" + category + "'."
+                );
             }
 
             Random random = new Random();
