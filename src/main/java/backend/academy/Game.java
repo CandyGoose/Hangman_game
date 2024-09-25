@@ -33,9 +33,20 @@ public class Game {
             if (!word.contains(String.valueOf(guess))) {
                 attemptsLeft--;
                 System.out.println("Неправильная буква! Осталось попыток: " + attemptsLeft);
-                HangmanVisual.displayHangman(attemptsLeft);
             }
+        } else {
+            System.out.println("Эта буква уже была введена.");
         }
+        displayGameState();
+    }
+
+    public void displayGameState() {
+        HangmanVisual.displayHangman(attemptsLeft);
+        System.out.println("Текущее состояние слова: " + getMaskedWord());
+    }
+
+    public boolean isGameOver() {
+        return attemptsLeft <= 0;
     }
 
     public boolean isWordGuessed() {
@@ -45,10 +56,6 @@ public class Game {
             }
         }
         return true;
-    }
-
-    public boolean isGameOver() {
-        return attemptsLeft <= 0;
     }
 
     public String getWord() {

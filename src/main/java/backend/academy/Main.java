@@ -47,9 +47,10 @@ public class Main {
         System.out.println("Категория: " + selectedCategory);
         System.out.println("Уровень сложности: " + selectedDifficulty);
 
+        game.displayGameState();
+
         // Игровой цикл
         while (!game.isGameOver()) {
-            System.out.println(game.getMaskedWord());
             System.out.println("Введите букву: ");
             String input = scanner.nextLine().toLowerCase();
 
