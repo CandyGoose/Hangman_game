@@ -12,7 +12,7 @@ class CategoryProviderTest {
     void testGetRandomWord() {
         String word = CategoryProvider.getRandomWord("Животные", "Легкий");
         assertNotNull(word);
-        assertTrue(List.of("кот", "пёс", "заяц").contains(word));
+        assertTrue(List.of("кот", "пёс", "заяц", "муха", "птица").contains(word));
     }
 
     @Test

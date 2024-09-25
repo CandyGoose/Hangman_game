@@ -1,5 +1,7 @@
 package backend.academy;
 
+import java.io.PrintStream;
+
 public class HangmanVisual {
 
     private static final String BEAM = "|      ";
@@ -19,7 +21,7 @@ public class HangmanVisual {
         "/ \\"
     };
 
-    public static void displayHangman(int attemptsLeft) {
+    public static void displayHangman(int attemptsLeft, PrintStream out) {
         StringBuilder hangman = new StringBuilder(BASE_STRUCTURE);
 
         if (attemptsLeft < 6) {
@@ -49,6 +51,6 @@ public class HangmanVisual {
         hangman.append(BEAM).append("\n");
         hangman.append("===========");
 
-        System.out.println(hangman);
+        out.println(hangman);
     }
 }

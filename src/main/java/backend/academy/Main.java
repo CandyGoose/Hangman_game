@@ -1,19 +1,26 @@
 package backend.academy;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class);
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
+        PrintStream out = System.out;
+
 
         try {
             List<String> categories = CategoryProvider.getCategories();
-            System.out.println("Выберите категорию (или нажмите Enter для случайного выбора): ");
+            out.println("Выберите категорию (или нажмите Enter для случайного выбора): ");
             for (int i = 0; i < categories.size(); i++) {
-                System.out.println((i + 1) + ". " + categories.get(i));
+                out.println((i + 1) + ". " + categories.get(i));
             }
 
             String selectedCategory;
@@ -21,27 +28,26 @@ public class Main {
 
             if (input.isEmpty()) {
                 selectedCategory = categories.get(random.nextInt(categories.size()));
-                System.out.println("Случайная категория: " + selectedCategory);
+                out.println("Случайная категория: " + selectedCategory);
             } else {
                 try {
                     int categoryChoice = Integer.parseInt(input);
                     if (categoryChoice < 1 || categoryChoice > categories.size()) {
                         selectedCategory = categories.get(random.nextInt(categories.size()));
-                        System.out.println("Неправильный выбор. Используется случайная категория: " + selectedCategory);
+                        out.println("Неправильный выбор. Используется случайная категория: " + selectedCategory);
                     } else {
                         selectedCategory = categories.get(categoryChoice - 1);
                     }
                 } catch (NumberFormatException e) {
                     selectedCategory = categories.get(random.nextInt(categories.size()));
-                    System.out.println("Некорректный ввод. Используется случайная категория: " + selectedCategory);
+                    out.println("Некорректный ввод. Используется случайная категория: " + selectedCategory);
                 }
             }
 
-            // Выбор уровня сложности
             List<String> difficultyLevels = CategoryProvider.getDifficultyLevels();
-            System.out.println("Выберите уровень сложности (или нажмите Enter для случайного выбора): ");
+            out.println("Выберите уровень сложности (или нажмите Enter для случайного выбора): ");
             for (int i = 0; i < difficultyLevels.size(); i++) {
-                System.out.println((i + 1) + ". " + difficultyLevels.get(i));
+                out.println((i + 1) + ". " + difficultyLevels.get(i));
             }
 
             String selectedDifficulty;
@@ -49,36 +55,36 @@ public class Main {
 
             if (input.isEmpty()) {
                 selectedDifficulty = difficultyLevels.get(random.nextInt(difficultyLevels.size()));
-                System.out.println("Случайная сложность: " + selectedDifficulty);
+                out.println("Случайная сложность: " + selectedDifficulty);
             } else {
                 try {
                     int difficultyChoice = Integer.parseInt(input);
                     if (difficultyChoice < 1 || difficultyChoice > difficultyLevels.size()) {
                         selectedDifficulty = difficultyLevels.get(random.nextInt(difficultyLevels.size()));
-                        System.out.println("Неправильный выбор. Используется случайный уровень сложности: " + selectedDifficulty);
+                        out.println("Неправильный выбор. Используется случайная сложность: " + selectedDifficulty);
                     } else {
                         selectedDifficulty = difficultyLevels.get(difficultyChoice - 1);
                     }
                 } catch (NumberFormatException e) {
                     selectedDifficulty = difficultyLevels.get(random.nextInt(difficultyLevels.size()));
-                    System.out.println("Некорректный ввод. Используется случайный уровень сложности: " + selectedDifficulty);
+                    logger.error("Некорректный ввод. Выбран случайный уровень сложности: {}", selectedDifficulty, e);
+                    out.println("Некорректный ввод. Используется случайная сложность: " + selectedDifficulty);
                 }
             }
 
             String word = CategoryProvider.getRandomWord(selectedCategory, selectedDifficulty);
-
             Game game = new Game(word);
-            System.out.println("Категория: " + selectedCategory);
-            System.out.println("Уровень сложности: " + selectedDifficulty);
 
-            // Игровой цикл
+            out.println("Категория: " + selectedCategory);
+            out.println("Сложность: " + selectedDifficulty);
+
             while (!game.isGameOver()) {
-                System.out.println(game.getMaskedWord());
-                System.out.println("Введите букву: ");
+                out.println(game.getMaskedWord());
+                out.println("Введите букву: ");
                 String letterInput = scanner.nextLine().toLowerCase();
 
                 if (letterInput.length() != 1 || !Character.isLetter(letterInput.charAt(0))) {
-                    System.out.println("Ошибка ввода. Введите одну букву.");
+                    out.println("Ошибка ввода. Введите одну букву.");
                     continue;
                 }
 
@@ -86,14 +92,14 @@ public class Main {
                 game.makeGuess(guess);
 
                 if (game.isWordGuessed()) {
-                    System.out.println("Поздравляем! Вы угадали слово: " + game.getWord());
+                    out.println("Поздравляем! Вы угадали слово: " + game.getWord());
                     break;
                 } else if (game.isGameOver()) {
-                    System.out.println("Вы проиграли. Загаданное слово было: " + game.getWord());
+                    out.println("Вы проиграли. Загаданное слово было: " + game.getWord());
                 }
             }
         } catch (Exception e) {
-            System.out.println("Произошла ошибка: " + e.getMessage());
+            logger.error("Произошла ошибка: ", e);
         } finally {
             scanner.close();
         }

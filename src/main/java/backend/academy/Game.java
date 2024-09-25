@@ -1,17 +1,15 @@
 package backend.academy;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Game {
-    private static final Logger logger = LogManager.getLogger(Game.class);
     private String word;
     private Set<Character> guessedLetters;
     private int attemptsLeft;
     private final int maxAttempts = 6;
+    private PrintStream out;
 
     public Game(String word) {
         if (word == null || word.isEmpty()) {
@@ -20,24 +18,19 @@ public class Game {
         this.word = word.toLowerCase();
         this.guessedLetters = new HashSet<>();
         this.attemptsLeft = this.maxAttempts;
-        logger.info("Игра началась с загаданным словом: {}", word);
+        this.out = System.out;
     }
 
     public String getMaskedWord() {
-        try {
-            StringBuilder maskedWord = new StringBuilder();
-            for (char letter : word.toCharArray()) {
-                if (guessedLetters.contains(letter)) {
-                    maskedWord.append(letter);
-                } else {
-                    maskedWord.append("_");
-                }
+        StringBuilder maskedWord = new StringBuilder();
+        for (char letter : word.toCharArray()) {
+            if (guessedLetters.contains(letter)) {
+                maskedWord.append(letter);
+            } else {
+                maskedWord.append("_");
             }
-            return maskedWord.toString();
-        } catch (Exception e) {
-            logger.error("Ошибка при генерации замаскированного слова: ", e);
-            throw new RuntimeException("Ошибка при генерации замаскированного слова: " + e.getMessage(), e);
         }
+        return maskedWord.toString();
     }
 
     public void makeGuess(char guess) {
@@ -48,26 +41,23 @@ public class Game {
             guessedLetters.add(guess);
             if (!word.contains(String.valueOf(guess))) {
                 attemptsLeft--;
-                System.out.println("Неправильная буква! Осталось попыток: " + attemptsLeft);
-                HangmanVisual.displayHangman(attemptsLeft);
+                out.println("Неправильная буква! Осталось попыток: " + attemptsLeft);
+                HangmanVisual.displayHangman(attemptsLeft, out);
+            } else {
+                out.println("Правильная буква: " + guess);
             }
         } else {
-            System.out.println("Эта буква уже была введена.");
+            out.println("Эта буква уже была введена.");
         }
     }
 
     public boolean isWordGuessed() {
-        try {
-            for (char letter : word.toCharArray()) {
-                if (!guessedLetters.contains(letter)) {
-                    return false;
-                }
+        for (char letter : word.toCharArray()) {
+            if (!guessedLetters.contains(letter)) {
+                return false;
             }
-            return true;
-        } catch (Exception e) {
-            logger.error("Ошибка при проверке состояния слова: ", e);
-            throw new RuntimeException("Ошибка при проверке состояния слова: " + e.getMessage(), e);
         }
+        return true;
     }
 
     public boolean isGameOver() {
