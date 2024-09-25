@@ -1,25 +1,33 @@
 package backend.academy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 public class CategoryProvider {
-    private static final Map<String, Map<String, List<String>>> WORD_CATEGORIES = Map.of(
-        "Животные", Map.of(
-            "Легкий", List.of("кот", "пёс", "заяц"),
-            "Средний", List.of("тигр", "волк", "жираф"),
-            "Тяжелый", List.of("бегемот", "аллигатор", "арабский верблюд")
-        ),
-        "Техника", Map.of(
-            "Легкий", List.of("робот", "дрон", "лампа"),
-            "Средний", List.of("компьютер", "телефон", "телевизор"),
-            "Тяжелый", List.of("микроволновка", "автомобиль", "стиральная машина")
-        )
-    );
+    private static final Map<String, Map<String, List<String>>> WORD_DICTIONARY;
+
+    static {
+        ObjectMapper mapper = new ObjectMapper();
+        try (InputStream inputStream = CategoryProvider.class.getClassLoader().getResourceAsStream("words.json")) {
+            if (inputStream == null) {
+                throw new RuntimeException("Файл словаря words.json не найден в ресурсах.");
+            }
+            WORD_DICTIONARY = mapper.readValue(inputStream, Map.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка чтения словаря: " + e.getMessage(), e);
+        }
+    }
 
     public static List<String> getCategories() {
-        return List.copyOf(WORD_CATEGORIES.keySet());
+        try {
+            return List.copyOf(WORD_DICTIONARY.keySet());
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка получения категорий: " + e.getMessage(), e);
+        }
     }
 
     public static List<String> getDifficultyLevels() {
@@ -27,9 +35,21 @@ public class CategoryProvider {
     }
 
     public static String getRandomWord(String category, String difficulty) {
-        List<String> words = WORD_CATEGORIES.get(category).get(difficulty);
-        Random random = new Random();
-        return words.get(random.nextInt(words.size()));
+        try {
+            Map<String, List<String>> categoryWords = WORD_DICTIONARY.get(category);
+            if (categoryWords == null) {
+                throw new RuntimeException("Категория '" + category + "' не найдена в словаре.");
+            }
+
+            List<String> words = categoryWords.get(difficulty);
+            if (words == null || words.isEmpty()) {
+                throw new RuntimeException("Нет доступных слов для сложности '" + difficulty + "' в категории '" + category + "'.");
+            }
+
+            Random random = new Random();
+            return words.get(random.nextInt(words.size()));
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка получения случайного слова: " + e.getMessage(), e);
+        }
     }
 }
-

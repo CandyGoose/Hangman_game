@@ -18,9 +18,10 @@ class CategoryProviderTest {
     @Test
     void testGetCategories() {
         List<String> categories = CategoryProvider.getCategories();
-        assertEquals(2, categories.size());
+        assertEquals(3, categories.size());
         assertTrue(categories.contains("Животные"));
         assertTrue(categories.contains("Техника"));
+        assertTrue(categories.contains("Фрукты"));
     }
 
     @Test
