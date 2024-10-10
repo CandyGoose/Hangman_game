@@ -15,6 +15,8 @@ public class WordProvider {
     private static final String ERROR_READING_DICTIONARY = "Ошибка чтения словаря: ";
     private static final String ERROR_GETTING_CATEGORIES = "Ошибка получения категорий: ";
     private static final String ERROR_GETTING_RANDOM_WORD = "Ошибка получения случайного слова: ";
+    private static final String WORD_KEY = "слово";
+    private static final String HINT_KEY = "подсказка";
     private static final Map<String, Map<String, List<Map<String, String>>>> WORD_DICTIONARY;
 
     private WordProvider() {
@@ -65,9 +67,9 @@ public class WordProvider {
 
             Random random = new Random();
             Map<String, String> wordEntry = words.get(random.nextInt(words.size()));
-            String word = wordEntry.get("слово");
-            String hint = wordEntry.get("подсказка");
-            LOGGER.info("Выбрано слово: {}, Подсказка: {}", word, hint);
+            String word = wordEntry.get(WORD_KEY);
+            String hint = wordEntry.get(HINT_KEY);
+            LOGGER.info("Слово выбрано");
             return new WordWithHint(word, hint);
         } catch (Exception e) {
             LOGGER.error(ERROR_GETTING_RANDOM_WORD, e);
